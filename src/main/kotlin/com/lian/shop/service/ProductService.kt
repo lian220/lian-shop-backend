@@ -33,6 +33,27 @@ class ProductService(private val productRepository: ProductRepository) {
         return productRepository.save(product).toDto()
     }
 
+    @Transactional
+    fun updateProduct(id: Long, request: CreateProductRequest): ProductDto {
+        val product = productRepository.findById(id)
+                .orElseThrow { RuntimeException("Product not found") }
+        
+        product.name = request.name
+        product.description = request.description
+        product.price = request.price
+        product.stockQuantity = request.stockQuantity
+        product.imageUrl = request.imageUrl
+        
+        return productRepository.save(product).toDto()
+    }
+
+    @Transactional
+    fun deleteProduct(id: Long) {
+        val product = productRepository.findById(id)
+                .orElseThrow { RuntimeException("Product not found") }
+        productRepository.delete(product)
+    }
+
     private fun Product.toDto() =
             ProductDto(
                     id = id,

@@ -23,3 +23,10 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
     enabled: true
+
+# CORS 설정
+# 환경 변수 CORS_ORIGIN에 허용할 origin을 설정 (예: https://your-frontend-domain.com)
+# 기본값: * (모든 origin 허용)
+# 환경 변수 CORS_ADDITIONAL_ORIGINS에 추가 origin을 쉼표로 구분하여 설정 가능
+# 로컬 개발 환경(localhost, 127.0.0.1)은 자동으로 허용됩니다.
+# 설정된 origin 외의 모든 요청은 차단됩니다.

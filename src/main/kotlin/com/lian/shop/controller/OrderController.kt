@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/orders")
-@CrossOrigin(origins = ["*"])
 class OrderController(private val orderService: OrderService) {
     @PostMapping
     fun createOrder(@RequestBody request: CreateOrderRequest): OrderDto {

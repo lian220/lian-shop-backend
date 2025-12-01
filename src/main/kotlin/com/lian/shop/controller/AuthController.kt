@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = ["*"])
 class AuthController(private val authService: AuthService) {
     @PostMapping("/signup")
     fun signup(@RequestBody request: SignupRequest): AuthResponse {

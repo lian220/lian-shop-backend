@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/products")
-@CrossOrigin(origins = ["*"]) // Allow all for now
 class ProductController(private val productService: ProductService) {
     @GetMapping
     fun getAllProducts(): List<ProductDto> {
@@ -19,8 +18,9 @@ class ProductController(private val productService: ProductService) {
         return productService.getProduct(id)
     }
 
-    @PostMapping
-    fun createProduct(@RequestBody request: CreateProductRequest): ProductDto {
-        return productService.createProduct(request)
-    }
+    // 상품 생성은 관리자 전용이므로 AdminController로 이동
+    // @PostMapping
+    // fun createProduct(@RequestBody request: CreateProductRequest): ProductDto {
+    //     return productService.createProduct(request)
+    // }
 }
