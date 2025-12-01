@@ -17,7 +17,7 @@
 
 # Gradle
 .gradle
-gradle/wrapper/gradle-wrapper.jar
+# gradle/wrapper/gradle-wrapper.jar는 Dockerfile에서 필요하므로 제외하지 않음
 
 # Logs
 *.log
