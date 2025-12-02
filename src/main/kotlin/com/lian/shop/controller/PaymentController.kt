@@ -1,0 +1,31 @@
+package com.lian.shop.controller
+
+import com.lian.shop.dto.ConfirmPaymentRequest
+import com.lian.shop.dto.ConfirmPaymentResponse
+import com.lian.shop.service.PaymentService
+import org.springframework.web.bind.annotation.*
+
+@RestController
+@RequestMapping("/api/payments")
+class PaymentController(
+    private val paymentService: PaymentService
+) {
+    /**
+     * 결제 승인 API
+     * 프론트엔드에서 결제 성공 후 paymentKey를 받아서 서버에서 승인 처리
+     */
+    @PostMapping("/confirm")
+    fun confirmPayment(@RequestBody request: ConfirmPaymentRequest): ConfirmPaymentResponse {
+        return paymentService.confirmPayment(request)
+    }
+
+    /**
+     * 테스트용 결제 승인 API
+     * 실제 토스페이먼츠 API 호출 없이 결제 완료 처리
+     */
+    @PostMapping("/confirm/test")
+    fun confirmPaymentForTest(@RequestBody request: ConfirmPaymentRequest): ConfirmPaymentResponse {
+        return paymentService.confirmPaymentForTest(request)
+    }
+}
+

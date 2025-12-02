@@ -16,6 +16,9 @@ spring:
   sql:
     init:
       mode: always
+  cloud:
+    compatibility-verifier:
+      enabled: false
 
 springdoc:
   api-docs:

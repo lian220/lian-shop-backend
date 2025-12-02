@@ -27,12 +27,19 @@ class OrderService(
                     RuntimeException("User not found")
                 }
 
+        // 주문번호 생성 (토스페이먼츠 orderId로 사용)
+        val orderNumber = generateOrderNumber()
+
         val order =
                 Order(
                         user = user,
                         status = OrderStatus.PENDING,
                         totalAmount = BigDecimal.ZERO, // Will calculate
-                        shippingAddress = request.shippingAddress
+                        shippingAddress = request.shippingAddress,
+                        orderNumber = orderNumber,
+                        customerName = request.customerName,
+                        customerEmail = request.customerEmail,
+                        customerPhone = request.customerPhone
                 )
 
         var totalAmount = BigDecimal.ZERO
@@ -63,7 +70,22 @@ class OrderService(
         order.items = orderItems
         order.totalAmount = totalAmount
 
-        return orderRepository.save(order).toDto()
+        val savedOrder = orderRepository.save(order)
+        
+        // 주문 생성 이력 추가
+        savedOrder.changeStatus(OrderStatus.PENDING, "주문 생성", "SYSTEM")
+        orderRepository.save(savedOrder)
+
+        return savedOrder.toDto()
+    }
+    
+    /**
+     * 주문번호 생성 (토스페이먼츠 orderId 형식)
+     */
+    private fun generateOrderNumber(): String {
+        val timestamp = System.currentTimeMillis()
+        val random = (1000..9999).random()
+        return "order_${timestamp}_${random}"
     }
 
     fun getOrder(id: Long): OrderDto {
@@ -73,6 +95,13 @@ class OrderService(
                 .toDto()
     }
 
+    fun getOrdersByUserId(userId: Long): List<OrderDto> {
+        return orderRepository
+                .findByUserId(userId)
+                .map { it.toDto() }
+                .sortedByDescending { it.id }
+    }
+
     private fun Order.toDto() =
             OrderDto(
                     id = id,
@@ -80,6 +109,8 @@ class OrderService(
                     status = status.name,
                     totalAmount = totalAmount,
                     shippingAddress = shippingAddress,
+                    orderNumber = orderNumber,
+                    createdAt = createdAt?.toString(),
                     items =
                             items.map {
                                 OrderItemDto(
