@@ -6,7 +6,7 @@ import org.springframework.boot.runApplication
 import org.springframework.cloud.openfeign.EnableFeignClients
 
 @SpringBootApplication
-@EnableFeignClients
+@EnableFeignClients(basePackages = ["com.lian.shop.infrastructure.external"])
 class LianShopApplication
 
 fun main(args: Array<String>) {
