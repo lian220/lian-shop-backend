@@ -13,6 +13,8 @@ spring:
       idle-timeout: 600000
       max-lifetime: 1800000
       leak-detection-threshold: 60000
+      connection-test-query: SELECT 1
+      auto-commit: true
   jpa:
     hibernate:
       ddl-auto: none
@@ -20,8 +22,6 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-        connection:
-          provider_disables_autocommit: true
         jdbc:
           batch_size: 20
   sql:

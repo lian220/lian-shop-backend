@@ -22,25 +22,23 @@ class DataSourceConfig(
             .build()
 
         // PostgreSQL prepared statement 중복 문제 해결
-        // prepareThreshold=0으로 설정하여 prepared statement 비활성화
-        val originalUrl = hikariDataSource.jdbcUrl
+        val originalUrl = hikariDataSource.jdbcUrl ?: ""
+        
+        // 필요한 파라미터들을 추가
+        val params = mutableListOf<String>()
+        params.add("prepareThreshold=0")  // prepared statement 캐싱 비활성화
+        params.add("preparedStatementCacheQueries=0")  // 쿼리 캐시 비활성화
+        params.add("preparedStatementCacheSizeMiB=0")  // 캐시 크기 0
         
         val urlWithParams = if (originalUrl.contains("?")) {
-            // 이미 파라미터가 있는 경우
-            if (!originalUrl.contains("prepareThreshold")) {
-                "$originalUrl&prepareThreshold=0"
-            } else {
-                originalUrl.replace("prepareThreshold=\\d+".toRegex(), "prepareThreshold=0")
-            }
+            val baseUrl = originalUrl.substringBefore("?")
+            val existingParams = originalUrl.substringAfter("?")
+            "$baseUrl?$existingParams&${params.joinToString("&")}"
         } else {
-            // 파라미터가 없는 경우
-            "$originalUrl?prepareThreshold=0"
+            "$originalUrl?${params.joinToString("&")}"
         }
         
         hikariDataSource.jdbcUrl = urlWithParams
-        
-        // Spring 트랜잭션 관리와 호환되도록 autoCommit 비활성화
-        hikariDataSource.isAutoCommit = false
         
         return hikariDataSource
     }
