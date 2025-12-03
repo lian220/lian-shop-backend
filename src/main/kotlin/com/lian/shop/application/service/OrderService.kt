@@ -96,6 +96,16 @@ class OrderService(
                 .map { it.toDto() }
                 .sortedByDescending { it.id }
     }
+    
+    /**
+     * 전체 주문 목록 조회 (관리자용)
+     */
+    fun getAllOrders(): List<OrderDto> {
+        return orderRepository
+                .findAll()
+                .map { it.toDto() }
+                .sortedByDescending { it.id }
+    }
 
     private fun Order.toDto() =
             OrderDto(

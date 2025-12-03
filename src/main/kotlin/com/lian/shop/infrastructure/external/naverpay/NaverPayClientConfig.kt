@@ -1,4 +1,4 @@
-package com.lian.shop.infrastructure.external.tosspayments
+package com.lian.shop.infrastructure.external.naverpay
 
 import feign.Logger
 import feign.RequestInterceptor
@@ -7,10 +7,10 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 /**
- * Feign Client 설정
+ * 네이버페이 Feign Client 설정
  */
 @Configuration
-class TossPaymentsClientConfig {
+class NaverPayClientConfig {
     
     /**
      * Feign 로깅 레벨 설정

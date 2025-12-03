@@ -1,5 +1,22 @@
 package com.lian.shop.application.dto
 
+// 결제 준비 요청
+data class PreparePaymentRequest(
+    val orderId: String,
+    val amount: Long,
+    val orderName: String,
+    val successUrl: String,
+    val failUrl: String
+)
+
+// 결제 준비 응답
+data class PreparePaymentResponse(
+    val orderId: String,
+    val orderName: String,
+    val amount: Long,
+    val paymentUrl: String  // 네이버페이 결제 URL
+)
+
 // 결제 승인 요청
 data class ConfirmPaymentRequest(
     val paymentKey: String,

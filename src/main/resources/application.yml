@@ -39,6 +39,12 @@ springdoc:
     path: /swagger-ui.html
     enabled: true
 
+# 네이버페이 설정
+# 환경 변수로 설정 필요:
+# - NAVER_PAY_CLIENT_ID: 네이버페이 클라이언트 ID
+# - NAVER_PAY_CLIENT_SECRET: 네이버페이 클라이언트 시크릿
+# - NAVER_PAY_BASE_URL: 네이버페이 API URL (기본값: https://dev.apis.naver.com/naverpay-partner/naverpay)
+
 # CORS 설정
 # 환경 변수 CORS_ORIGIN에 허용할 origin을 설정 (예: https://your-frontend-domain.com)
 # 기본값: * (모든 origin 허용)
