@@ -2,7 +2,7 @@ spring:
   application:
     name: lian-shop
   datasource:
-    url: ${DATABASE_URL}
+    url: ${DATABASE_URL}?prepareThreshold=0&preparedStatementCacheQueries=0
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
     driver-class-name: org.postgresql.Driver
@@ -15,6 +15,7 @@ spring:
       leak-detection-threshold: 60000
       connection-test-query: SELECT 1
       auto-commit: true
+      connection-init-sql: DISCARD ALL
   jpa:
     hibernate:
       ddl-auto: none
