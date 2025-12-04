@@ -30,10 +30,10 @@ class PaymentCancel(
     var refundableAmount: BigDecimal? = null, // 환불 가능 금액
     
     @Column(name = "transaction_key", length = 100)
-    var transactionKey: String? = null, // 토스페이먼츠 거래 키
+    var transactionKey: String? = null, // 결제 시스템 거래 키
     
     @Column(name = "receipt_key", length = 100)
-    var receiptKey: String? = null, // 토스페이먼츠 영수증 키
+    var receiptKey: String? = null, // 결제 시스템 영수증 키
     
     @Enumerated(EnumType.STRING) @Column(nullable = false)
     var cancelStatus: CancelStatus, // 취소 상태

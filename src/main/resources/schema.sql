@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS orders (
     status VARCHAR(50) NOT NULL, -- PENDING, PAYMENT_FAILED, PAID, PREPARING, SHIPPED, DELIVERED, CANCELLED, REFUNDED
     total_amount DECIMAL(10, 2) NOT NULL,
     shipping_address TEXT NOT NULL,
-    order_number VARCHAR(100) UNIQUE, -- 주문번호 (토스페이먼츠 orderId와 연동)
+    order_number VARCHAR(100) UNIQUE, -- 주문번호 (결제 시스템 orderId와 연동)
     customer_name VARCHAR(100), -- 주문자명
     customer_email VARCHAR(255), -- 주문자 이메일
     customer_phone VARCHAR(50), -- 주문자 전화번호
@@ -61,8 +61,8 @@ CREATE TABLE IF NOT EXISTS order_items (
 CREATE TABLE IF NOT EXISTS payments (
     id SERIAL PRIMARY KEY,
     order_id INT UNIQUE REFERENCES orders(id),
-    payment_key VARCHAR(200) UNIQUE, -- 토스페이먼츠 결제 키
-    order_id_toss VARCHAR(100), -- 토스페이먼츠 주문번호
+    payment_key VARCHAR(200) UNIQUE, -- 결제 키 (네이버페이 paymentId)
+    order_id_toss VARCHAR(100), -- 결제 서비스 주문번호
     order_name VARCHAR(255), -- 주문명
     amount DECIMAL(10, 2) NOT NULL, -- 결제 금액
     balance_amount DECIMAL(10, 2), -- 잔액 (취소 후 남은 금액)
@@ -105,8 +105,8 @@ CREATE TABLE IF NOT EXISTS payment_cancels (
     tax_free_amount DECIMAL(10, 2), -- 면세 금액
     tax_exemption_amount DECIMAL(10, 2), -- 과세 제외 금액
     refundable_amount DECIMAL(10, 2), -- 환불 가능 금액
-    transaction_key VARCHAR(100), -- 토스페이먼츠 거래 키
-    receipt_key VARCHAR(100), -- 토스페이먼츠 영수증 키
+    transaction_key VARCHAR(100), -- 결제 시스템 거래 키
+    receipt_key VARCHAR(100), -- 결제 시스템 영수증 키
     cancel_status VARCHAR(50) NOT NULL, -- IN_PROGRESS, DONE, ABORTED
     cancel_request_id VARCHAR(100), -- 멱등성을 위한 취소 요청 ID
     canceled_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, -- 취소 시간
@@ -166,7 +166,7 @@ COMMENT ON COLUMN orders.user_id IS '주문자 ID (FK)';
 COMMENT ON COLUMN orders.status IS '주문 상태 (PENDING, PAYMENT_FAILED, PAID, PREPARING, SHIPPED, DELIVERED, CANCELLED, REFUNDED)';
 COMMENT ON COLUMN orders.total_amount IS '주문 총 금액';
 COMMENT ON COLUMN orders.shipping_address IS '배송 주소';
-COMMENT ON COLUMN orders.order_number IS '주문번호 (토스페이먼츠 orderId와 연동, UNIQUE)';
+COMMENT ON COLUMN orders.order_number IS '주문번호 (결제 시스템 orderId와 연동, UNIQUE)';
 COMMENT ON COLUMN orders.customer_name IS '주문자명';
 COMMENT ON COLUMN orders.customer_email IS '주문자 이메일';
 COMMENT ON COLUMN orders.customer_phone IS '주문자 전화번호';
@@ -195,11 +195,11 @@ COMMENT ON COLUMN order_items.product_id IS '상품 ID (FK)';
 COMMENT ON COLUMN order_items.quantity IS '주문 수량';
 COMMENT ON COLUMN order_items.price_at_purchase IS '주문 당시 상품 가격 (가격 변동 대비)';
 
-COMMENT ON TABLE payments IS '결제 정보 테이블 - 토스페이먼츠 결제 승인 정보 저장';
+COMMENT ON TABLE payments IS '결제 정보 테이블 - 네이버페이 결제 승인 정보 저장';
 COMMENT ON COLUMN payments.id IS '결제 ID (PK)';
 COMMENT ON COLUMN payments.order_id IS '주문 ID (FK, UNIQUE)';
-COMMENT ON COLUMN payments.payment_key IS '토스페이먼츠 결제 키 (UNIQUE)';
-COMMENT ON COLUMN payments.order_id_toss IS '토스페이먼츠 주문번호';
+COMMENT ON COLUMN payments.payment_key IS '결제 키 (네이버페이 paymentId, UNIQUE)';
+COMMENT ON COLUMN payments.order_id_toss IS '결제 서비스 주문번호';
 COMMENT ON COLUMN payments.order_name IS '주문명';
 COMMENT ON COLUMN payments.amount IS '결제 금액';
 COMMENT ON COLUMN payments.balance_amount IS '잔액 (취소 후 남은 금액)';
@@ -211,7 +211,7 @@ COMMENT ON COLUMN payments.status IS '결제 상태 (READY, IN_PROGRESS, DONE, C
 COMMENT ON COLUMN payments.method IS '결제 수단 (카드, 계좌이체, 가상계좌 등)';
 COMMENT ON COLUMN payments.currency IS '통화 (KRW, USD 등)';
 COMMENT ON COLUMN payments.m_id IS '상점 ID (Merchant ID)';
-COMMENT ON COLUMN payments.version IS '토스페이먼츠 API 버전';
+COMMENT ON COLUMN payments.version IS '결제 API 버전';
 COMMENT ON COLUMN payments.requested_at IS '결제 요청 시간';
 COMMENT ON COLUMN payments.approved_at IS '결제 승인 시간';
 COMMENT ON COLUMN payments.use_escrow IS '에스크로 사용 여부';
@@ -238,8 +238,8 @@ COMMENT ON COLUMN payment_cancels.cancel_reason IS '취소 사유';
 COMMENT ON COLUMN payment_cancels.tax_free_amount IS '면세 금액';
 COMMENT ON COLUMN payment_cancels.tax_exemption_amount IS '과세 제외 금액';
 COMMENT ON COLUMN payment_cancels.refundable_amount IS '환불 가능 금액';
-COMMENT ON COLUMN payment_cancels.transaction_key IS '토스페이먼츠 거래 키';
-COMMENT ON COLUMN payment_cancels.receipt_key IS '토스페이먼츠 영수증 키';
+COMMENT ON COLUMN payment_cancels.transaction_key IS '결제 시스템 거래 키';
+COMMENT ON COLUMN payment_cancels.receipt_key IS '결제 시스템 영수증 키';
 COMMENT ON COLUMN payment_cancels.cancel_status IS '취소 상태 (IN_PROGRESS, DONE, ABORTED)';
 COMMENT ON COLUMN payment_cancels.cancel_request_id IS '멱등성을 위한 취소 요청 ID';
 COMMENT ON COLUMN payment_cancels.canceled_at IS '취소 시간';

@@ -23,7 +23,7 @@ class PaymentController(
 
     /**
      * 결제 승인 API
-     * 프론트엔드에서 결제 성공 후 paymentKey를 받아서 서버에서 승인 처리
+     * 프론트엔드에서 결제 성공 후 paymentKey를 받아서 서버에서 네이버페이 승인 처리
      */
     @PostMapping("/confirm")
     fun confirmPayment(@RequestBody request: ConfirmPaymentRequest): ConfirmPaymentResponse {
@@ -32,7 +32,7 @@ class PaymentController(
 
     /**
      * 테스트용 결제 승인 API
-     * 실제 토스페이먼츠 API 호출 없이 결제 완료 처리
+     * 실제 네이버페이 API 호출 없이 결제 완료 처리 (개발/테스트 환경용)
      */
     @PostMapping("/confirm/test")
     fun confirmPaymentForTest(@RequestBody request: ConfirmPaymentRequest): ConfirmPaymentResponse {

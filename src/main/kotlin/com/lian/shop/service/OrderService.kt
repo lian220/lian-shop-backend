@@ -1,14 +1,14 @@
-package com.lian.shop.application.service
+package com.lian.shop.service
 
 import com.lian.shop.domain.Order
 import com.lian.shop.domain.OrderItem
 import com.lian.shop.domain.OrderStatus
-import com.lian.shop.application.dto.CreateOrderRequest
-import com.lian.shop.application.dto.OrderDto
-import com.lian.shop.application.dto.OrderItemDto
-import com.lian.shop.domain.repository.OrderRepository
-import com.lian.shop.domain.repository.ProductRepository
-import com.lian.shop.domain.repository.UserRepository
+import com.lian.shop.dto.CreateOrderRequest
+import com.lian.shop.dto.OrderDto
+import com.lian.shop.dto.OrderItemDto
+import com.lian.shop.repository.OrderRepository
+import com.lian.shop.repository.ProductRepository
+import com.lian.shop.repository.UserRepository
 import java.math.BigDecimal
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -22,30 +22,27 @@ class OrderService(
 ) {
     @Transactional
     fun createOrder(request: CreateOrderRequest): OrderDto {
-        val user = userRepository.findById(request.userId)
-            ?: throw RuntimeException("User not found")
-
-        // 주문번호 생성
-        val orderNumber = generateOrderNumber()
+        val user =
+                userRepository.findById(request.userId).orElseThrow {
+                    RuntimeException("User not found")
+                }
 
         val order =
                 Order(
                         user = user,
                         status = OrderStatus.PENDING,
                         totalAmount = BigDecimal.ZERO, // Will calculate
-                        shippingAddress = request.shippingAddress,
-                        orderNumber = orderNumber,
-                        customerName = request.customerName,
-                        customerEmail = request.customerEmail,
-                        customerPhone = request.customerPhone
+                        shippingAddress = request.shippingAddress
                 )
 
         var totalAmount = BigDecimal.ZERO
         val orderItems = mutableListOf<OrderItem>()
 
         for (itemReq in request.items) {
-            val product = productRepository.findById(itemReq.productId)
-                ?: throw RuntimeException("Product not found")
+            val product =
+                    productRepository.findById(itemReq.productId).orElseThrow {
+                        RuntimeException("Product not found")
+                    }
 
             if (product.stockQuantity < itemReq.quantity) {
                 throw RuntimeException("Not enough stock for product ${product.name}")
@@ -66,45 +63,14 @@ class OrderService(
         order.items = orderItems
         order.totalAmount = totalAmount
 
-        val savedOrder = orderRepository.save(order)
-        
-        // 주문 생성 이력 추가
-        savedOrder.changeStatus(OrderStatus.PENDING, "주문 생성", "SYSTEM")
-        orderRepository.save(savedOrder)
-
-        return savedOrder.toDto()
-    }
-    
-    /**
-     * 주문번호 생성
-     */
-    private fun generateOrderNumber(): String {
-        val timestamp = System.currentTimeMillis()
-        val random = (1000..9999).random()
-        return "order_${timestamp}_${random}"
+        return orderRepository.save(order).toDto()
     }
 
     fun getOrder(id: Long): OrderDto {
-        val order = orderRepository.findById(id)
-            ?: throw RuntimeException("Order not found")
-        return order.toDto()
-    }
-
-    fun getOrdersByUserId(userId: Long): List<OrderDto> {
         return orderRepository
-                .findByUserId(userId)
-                .map { it.toDto() }
-                .sortedByDescending { it.id }
-    }
-    
-    /**
-     * 전체 주문 목록 조회 (관리자용)
-     */
-    fun getAllOrders(): List<OrderDto> {
-        return orderRepository
-                .findAll()
-                .map { it.toDto() }
-                .sortedByDescending { it.id }
+                .findById(id)
+                .orElseThrow { RuntimeException("Order not found") }
+                .toDto()
     }
 
     private fun Order.toDto() =
@@ -114,8 +80,6 @@ class OrderService(
                     status = status.name,
                     totalAmount = totalAmount,
                     shippingAddress = shippingAddress,
-                    orderNumber = orderNumber,
-                    createdAt = createdAt?.toString(),
                     items =
                             items.map {
                                 OrderItemDto(

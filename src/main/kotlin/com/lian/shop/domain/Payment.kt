@@ -6,7 +6,7 @@ import java.time.LocalDateTime
 
 /**
  * 결제 정보
- * 토스페이먼츠 결제 승인 정보를 저장합니다.
+ * 네이버페이 결제 승인 정보를 저장합니다.
  */
 @Entity
 @Table(name = "payments")
@@ -15,10 +15,10 @@ class Payment(
     var order: Order,
     
     @Column(name = "payment_key", length = 200, unique = true)
-    var paymentKey: String? = null, // 토스페이먼츠 결제 키
+    var paymentKey: String? = null, // 결제 키 (네이버페이 paymentId)
     
     @Column(name = "order_id_toss", length = 100)
-    var orderIdToss: String? = null, // 토스페이먼츠 주문번호
+    var orderIdToss: String? = null, // 결제 서비스 주문번호
     
     @Column(name = "order_name", length = 255)
     var orderName: String? = null, // 주문명

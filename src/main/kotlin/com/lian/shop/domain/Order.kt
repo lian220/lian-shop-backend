@@ -24,7 +24,7 @@ class Order(
     var shippingAddress: String,
     
     @Column(name = "order_number", length = 100, unique = true)
-    var orderNumber: String? = null, // 주문번호 (토스페이먼츠 orderId와 연동)
+    var orderNumber: String? = null, // 주문번호 (결제 시스템 orderId와 연동)
     
     @Column(name = "customer_name", length = 100)
     var customerName: String? = null, // 주문자명

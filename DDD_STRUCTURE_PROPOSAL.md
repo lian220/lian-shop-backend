@@ -76,9 +76,7 @@ com.lian.shop/
 │   │   └── payment/
 │   │       └── JpaPaymentRepository.kt
 │   ├── external/              # 외부 서비스 연동
-│   │   └── tosspayments/
-│   │       ├── TossPaymentsClient.kt
-│   │       └── TossPaymentsClientConfig.kt
+│   │   └── (토스페이먼츠 관련 파일 제거됨 - 네이버페이만 사용)
 │   └── config/                # 설정
 │       ├── SecurityConfig.kt
 │       ├── WebConfig.kt
@@ -216,8 +214,8 @@ com.lian.shop/
 │   ├── repository/           # JPA 리포지토리 구현
 │   │   ├── JpaProductRepository.kt
 │   │   └── ...
-│   ├── client/               # 외부 클라이언트
-│   │   └── TossPaymentsClient.kt
+│   ├── external/             # 외부 서비스 연동
+│   │   └── naverpay/        # 네이버페이 클라이언트
 │   └── config/               # 설정
 │
 └── presentation/             # 프레젠테이션 계층
@@ -257,8 +255,8 @@ com.lian.shop/
 ├── infrastructure/            # 인프라스트럭처 계층
 │   ├── repository/           # JPA 구현
 │   │   └── JpaRepositories.kt
-│   ├── client/
-│   │   └── TossPaymentsClient.kt
+│   ├── external/             # 외부 서비스 연동
+│   │   └── naverpay/        # 네이버페이 클라이언트
 │   └── config/
 │
 └── presentation/             # 프레젠테이션 계층
